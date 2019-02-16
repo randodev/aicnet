@@ -75,3 +75,18 @@ e.stats.plot_sorted_winning_transporters()
 e.stats.plot_metric_comparison("pagerank")
 ```
 ![PageRank Plot](https://github.com/becheru/aicnet/blob/master/img/transport_provders_pagerank.png "PageRank Plot")
+
+In order to compute the PageRank coefficient, ES has performed an operation of building social graphs automatically for each bid set, which can also be done through the commands:
+
+``` python
+e.stats.build_graph(1)
+e.stats.build_graph(2)
+```
+
+8. ES is capable of exporting the social graphs in a _.gml_ format (in current folder), for further analysis with other tools.
+``` python
+e.stats.save_graph(1,"icnet_graph")
+e.stats.save_graph(2,"aicnet_graph")
+```
+
+9. In our case we have used [Gephi](https://gephi.org/) graph visualization and exploration platform, by importing the above mentioned _.gml_ files.
