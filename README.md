@@ -68,4 +68,5 @@ e.stats.get_nr_of_failed_negotiations(2)
 ``` python
 e.stats.plot_sorted_winning_transporters()
 ```
-E.g. [Nr. Wins Plot][https://github.com/becheru/aicnet/blob/master/img/transport_providers_wins.png]
+![Nr. Wins Plot][wins]
+[wins]: https://github.com/becheru/aicnet/blob/master/img/transport_providers_wins.png "Nr. Wins Plot"
