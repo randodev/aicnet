@@ -22,7 +22,7 @@ The ES is dependent on the following external Python3 libraries:
 
 ## Running the experiments
 
-Just copy/download/replicate the code in your Python IDE, then run it. The results of the experiments largely depend on the _environment variables_, which we recommend playing with before running the experiment.  
+Just copy/download/replicate the code in __main.py__ your Python IDE, then run it. The results of the experiments largely depend on the _environment variables_, which we recommend playing with before running the experiment.  
 
 #### Example of running experiments
 
