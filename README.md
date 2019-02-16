@@ -64,8 +64,14 @@ e.stats.get_nr_of_failed_negotiations(1)
 e.stats.get_nr_of_failed_negotiations(2)
 ```
 
-7. Plot a comparison on the number of transport provider' wins per between the bit sets.
+7. Plot a comparison on the number of transport provider' wins between bids sets.
 ``` python
 e.stats.plot_sorted_winning_transporters()
 ```
 ![Nr. Wins Plot](https://github.com/becheru/aicnet/blob/master/img/transport_providers_wins.png "Nr. Wins Plot")
+
+7. Plot a comparison on the transport provider' PageRank coefficients between the bids sets.
+``` python
+e.stats.plot_metric_comparison("pagerank")
+```
+![PageRank Plot](https://github.com/becheru/aicnet/blob/master/img/transport_provders_pagerank.png "PageRank Plot")
