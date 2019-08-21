@@ -6,6 +6,7 @@ import copy
 import networkx as nx
 import os
 
+
 class Bid:
     def __init__(self, cargo_owner_id, estimated_price):
         self.cargo_owner_id = cargo_owner_id
@@ -21,12 +22,12 @@ class Bid:
 
     def print_bid(self):
         print("Client Id " + str(self.cargo_owner_id)),
-        print("Estimated Price "+str(self.estimated_price)),
+        print("Estimated Price " + str(self.estimated_price)),
         if self.success == True:
-            print("Winning transporter Id "+str(self.transporter_id)),
-            print("Winning transporter personality "+self.transporter_personality),
-            print("Winning price "+str(self.winning_price)),
-            print("Nr iterations "+str(self.nr_iterations))
+            print("Winning transporter Id " + str(self.transporter_id)),
+            print("Winning transporter personality " + self.transporter_personality),
+            print("Winning price " + str(self.winning_price)),
+            print("Nr iterations " + str(self.nr_iterations))
         else:
             print(" No transporter")
 
@@ -117,7 +118,8 @@ class Personality:
         return self.roundMin + (self.roundMax - self.roundMin) * random.random()
 
     def get_GeneratedEstimationAdvantage(self):
-        return self.minPercentageOverEstimatedPrice + (self.maxPercentageOverEstimatedPrice - self.minPercentageOverEstimatedPrice) * random.random()
+        return self.minPercentageOverEstimatedPrice + (
+                    self.maxPercentageOverEstimatedPrice - self.minPercentageOverEstimatedPrice) * random.random()
 
     def get_BidCeiling(self, estimated_cost):
         return estimated_cost + self.maxPercentageOverEstimatedPrice * estimated_cost
@@ -141,7 +143,7 @@ class Broker:
 
 
 class CargoOwner:
-    def __init__(self,id):
+    def __init__(self, id):
         self.id = id
 
 
@@ -212,15 +214,15 @@ class Statistics():
         deg_dict = nx.degree_centrality(aux_graph)
         for node in deg_dict.keys():
             if deg_dict[node] == 0:
-                no_nodes_with_degree_zero +=1
+                no_nodes_with_degree_zero += 1
                 aux_graph.remove_node(node)
 
-        print("No nodes with degree zero",no_nodes_with_degree_zero)
-        #print("Node connectivty", nx.node_connectivity(aux_graph))
-        #print("Average degree connectivity",nx.average_degree_connectivity(aux_graph))
-        #print("Max clique", nx.max_clique(aux_graph))
+        print("No nodes with degree zero", no_nodes_with_degree_zero)
+        # print("Node connectivty", nx.node_connectivity(aux_graph))
+        # print("Average degree connectivity",nx.average_degree_connectivity(aux_graph))
+        # print("Max clique", nx.max_clique(aux_graph))
         print("Average clustering", nx.average_clustering(aux_graph))
-        #print("Communicability", nx.communicability(aux_graph))
+        # print("Communicability", nx.communicability(aux_graph))
         print("Diameter", nx.diameter(aux_graph))
         print("No. nodes in center", len(nx.center(aux_graph)))
         print("No. nodes in periphery", len(nx.periphery(aux_graph)))
@@ -239,7 +241,7 @@ class Statistics():
                 if self.graph_icnet.has_edge(bid_icnet.transporter_id, 100000 + bid_icnet.cargo_owner_id):
                     self.graph_icnet[bid_icnet.transporter_id][100000 + bid_icnet.cargo_owner_id]["weight"] += 1
                 else:
-                    self.graph_icnet.add_path([bid_icnet.transporter_id, 100000 + bid_icnet.cargo_owner_id], weight = 1)
+                    self.graph_icnet.add_path([bid_icnet.transporter_id, 100000 + bid_icnet.cargo_owner_id], weight=1)
 
         if graph_id == 2:
             self.graph_aicnet.clear()
@@ -251,7 +253,8 @@ class Statistics():
                 if self.graph_aicnet.has_edge(bid_aicnet.transporter_id, 100000 + bid_aicnet.cargo_owner_id):
                     self.graph_aicnet[bid_aicnet.transporter_id][100000 + bid_aicnet.cargo_owner_id]["weight"] += 1
                 else:
-                    self.graph_aicnet.add_path([bid_aicnet.transporter_id, 100000 + bid_aicnet.cargo_owner_id], weight = 1)
+                    self.graph_aicnet.add_path([bid_aicnet.transporter_id, 100000 + bid_aicnet.cargo_owner_id],
+                                               weight=1)
 
     def compute_pagerank(self, graph_id):
         """
@@ -264,7 +267,7 @@ class Statistics():
             nx.set_node_attributes(self.graph_icnet, 'pagerank', rank)
         if graph_id == 2:
             rank = nx.pagerank(self.graph_aicnet)
-            nx.set_node_attributes(self.graph_aicnet, 'pagerank', rank, )
+            nx.set_node_attributes(self.graph_aicnet, rank, 'pagerank')
 
     def compute_bet(self, graph_id):
         """
@@ -354,7 +357,8 @@ class Statistics():
         for counter in range(len(self.bids_icnet)):
             print("===" + str(counter + 1) + "===")
             print(
-                "Cargo Owner " + str(self.bids_icnet[counter].cargo_owner_id) + " <> " + str(self.bids_aicnet[counter].cargo_owner_id))
+                "Cargo Owner " + str(self.bids_icnet[counter].cargo_owner_id) + " <> " + str(
+                    self.bids_aicnet[counter].cargo_owner_id))
             print("Transporter " + str(self.bids_icnet[counter].transporter_id) + " <> " + str(
                 self.bids_aicnet[counter].transporter_id))
             print("Personality " + str(self.bids_icnet[counter].transporter_personality) + " <> " + str(
@@ -372,7 +376,7 @@ class Statistics():
             aux_bids = self.bids_aicnet
 
         for bid in aux_bids:
-            print("==="+str(counter)+"===")
+            print("===" + str(counter) + "===")
             bid.print_bid()
             counter += 1
 
@@ -407,11 +411,11 @@ class Statistics():
             if bid.success == True:
                 if bid.cargo_owner_id in cargo_owners:
                     aux = cargo_owners[bid.cargo_owner_id]
-                    cargo_owners[bid.cargo_owner_id] = aux +1
+                    cargo_owners[bid.cargo_owner_id] = aux + 1
                 else:
                     cargo_owners[bid.cargo_owner_id] = 1
 
-        return sorted(cargo_owners.items(), key =lambda  x:x[1], reverse=True)
+        return sorted(cargo_owners.items(), key=lambda x: x[1], reverse=True)
 
     def plot_sorted_successfull_biding_cargo_owners(self, bids_id):
         """Plots the aux_list of successful transport requests per cargo owner (already sorted)"""
@@ -457,11 +461,11 @@ class Statistics():
             if bid.success == True:
                 if bid.transporter_id in winners:
                     aux = winners[bid.transporter_id]
-                    winners[bid.transporter_id] = aux +1
+                    winners[bid.transporter_id] = aux + 1
                 else:
                     winners[bid.transporter_id] = 1
 
-        return sorted(winners.items(), key = lambda  x:x[1], reverse=True)
+        return sorted(winners.items(), key=lambda x: x[1], reverse=True)
 
     def plot_sorted_winning_transporters(self):
         """Plots the sorted (descendigly) transporter wins for both aicnet and icnet"""
@@ -475,8 +479,8 @@ class Statistics():
         for iterator in sorted_winning_transporters_aicnet:
             wins_aicnet.append(iterator[1])
 
-        line_icnet, = plt.plot(wins_icnet,"r--", label = "ICNET")
-        line_aicnet, = plt.plot(wins_aicnet,"b--", label = "AICNET")
+        line_icnet, = plt.plot(wins_icnet, "r--", label="ICNET")
+        line_aicnet, = plt.plot(wins_aicnet, "b--", label="AICNET")
         plt.legend(handles=[line_icnet, line_aicnet])
         plt.xlabel("transporters")
         plt.ylabel("no. wins")
@@ -492,7 +496,7 @@ class Statistics():
 
         gains = []
         for bid in aux_bids:
-            iteration_gain = bid.winning_price/bid.estimated_price
+            iteration_gain = bid.winning_price / bid.estimated_price
             gains.append(iteration_gain)
 
         avg_gain = np.mean(gains)
@@ -512,17 +516,17 @@ class Statistics():
             if bid.success == True:
                 if bid.transporter_personality in personality_stat:
                     aux = personality_stat[bid.transporter_personality]
-                    personality_stat[bid.transporter_personality] = aux +1
+                    personality_stat[bid.transporter_personality] = aux + 1
                 else:
                     personality_stat[bid.transporter_personality] = 1
 
-        return (sorted(personality_stat.items(), key = lambda x: x[1], reverse = True))
+        return (sorted(personality_stat.items(), key=lambda x: x[1], reverse=True))
 
     def get_nr_of_failed_negotiations(self, bids_id):
 
         if bids_id == 1:
             aux_bids = self.bids_icnet
-        if bids_id ==2:
+        if bids_id == 2:
             aux_bids = self.bids_aicnet
 
         count = 0
@@ -548,9 +552,11 @@ class Statistics():
         graph_path = os.path.join(os.getcwd(), graph_name)
         nx.write_gml(current_graph, graph_path)
 
+
 class Environemnt:
 
-    def __init__(self, broker_personality, nr_transporters, nr_cargo_owners, max_iterations, max_displacement_form_estimated_price, gauss_stdev) :
+    def __init__(self, broker_personality, nr_transporters, nr_cargo_owners, max_iterations,
+                 max_displacement_form_estimated_price, gauss_stdev):
         self.broker_personality = broker_personality
         self.nr_transporters = nr_transporters
         self.nr_cargo_owners = nr_cargo_owners
@@ -577,7 +583,7 @@ class Environemnt:
     def new_broker(self):
         """Initialzs a new broker"""
 
-        #self.broker_personality= random.choice(self.personality_types)
+        # self.broker_personality= random.choice(self.personality_types)
         self.broker = Broker(self.broker_personality)
 
     def new_transport_providers(self):
@@ -604,7 +610,8 @@ class Environemnt:
 
         random.seed()
         for transporter in transporters:
-            gaussian_error = random.gauss(self.gaussian_displacement + self.estimated_transport_cost, (self.gaussian_displacement / gauss_stdev))
+            gaussian_error = random.gauss(self.gaussian_displacement + self.estimated_transport_cost,
+                                          (self.gaussian_displacement / gauss_stdev))
             transporter.set_min_bid(gaussian_error)
             transporter.set_max_bid(gaussian_error)
 
@@ -614,18 +621,19 @@ class Environemnt:
         If there are two offers with the same best price the the function will randomnly choose between those transporters
         """
 
-        transporters_sorted_by_price = sorted(list_of_accepting_transporters.items(), key = operator.itemgetter(1), reverse = True) #sort transporters by price
+        transporters_sorted_by_price = sorted(list_of_accepting_transporters.items(), key=operator.itemgetter(1),
+                                              reverse=True)  # sort transporters by price
 
         same_price = True
         same_price_transporters = []
         same_price_transporters.append(transporters_sorted_by_price[0])  # add the transporter with the smallest price
         iterator = 1
         while same_price == True and iterator < len(transporters_sorted_by_price):
-           if transporters_sorted_by_price[iterator][1] == transporters_sorted_by_price[iterator-1][1]:
-               same_price_transporters.append(transporters_sorted_by_price[iterator])
-               iterator += 1
-           else:
-               same_price = False
+            if transporters_sorted_by_price[iterator][1] == transporters_sorted_by_price[iterator - 1][1]:
+                same_price_transporters.append(transporters_sorted_by_price[iterator])
+                iterator += 1
+            else:
+                same_price = False
 
         return random.choice(same_price_transporters)
 
@@ -635,25 +643,26 @@ class Environemnt:
          If there are two offers with the same SNA metric value the the function will randomnly choose between those transporters
          """
 
-        accepting_transporters_with_graph_rank={}
+        accepting_transporters_with_graph_rank = {}
         transporters = list_of_accepting_transporters.keys()
         for transporter in transporters:
-            #rank = nx.get_node_attributes(self.stats.graph2,"pagerank")[transporter.id]
+            # rank = nx.get_node_attributes(self.stats.graph2,"pagerank")[transporter.id]
             rank = nx.get_node_attributes(self.stats.graph_aicnet, rank_method)[transporter.id]
             accepting_transporters_with_graph_rank[transporter] = rank
 
-        transporters_sorted_by_rank = sorted(accepting_transporters_with_graph_rank.items(), key=operator.itemgetter(1), reverse = rank_reverse)
+        transporters_sorted_by_rank = sorted(accepting_transporters_with_graph_rank.items(), key=operator.itemgetter(1),
+                                             reverse=rank_reverse)
 
         same_rank = True
         same_rank_transporters = []
         same_rank_transporters.append(transporters_sorted_by_rank[0])  # add the transporter with the highest rank
         iterator = 1
         while same_rank == True and iterator < len(transporters_sorted_by_rank):
-           if transporters_sorted_by_rank[iterator][1] == transporters_sorted_by_rank[iterator-1][1]:
-               same_rank_transporters.append(transporters_sorted_by_rank[iterator])
-               iterator += 1
-           else:
-               same_rank = False
+            if transporters_sorted_by_rank[iterator][1] == transporters_sorted_by_rank[iterator - 1][1]:
+                same_rank_transporters.append(transporters_sorted_by_rank[iterator])
+                iterator += 1
+            else:
+                same_rank = False
 
         return random.choice(same_rank_transporters)
 
@@ -691,7 +700,7 @@ class Environemnt:
             random.seed()
             rand = random.random()
             if rand < transporter.personality.randomExchange:
-                transporter.personality.change_personality("random","up")
+                transporter.personality.change_personality("random", "up")
                 transporter.personality.compute_personality_indexes()
                 transporter.nr_lost_transports = 0
                 transporter.nr_won_transports = 0
@@ -719,23 +728,24 @@ class Environemnt:
     def icnet(self, max_iterations, gauss_stdev):
         """ICNET"""
 
-        #init broker
+        # init broker
         self.broker.set_initial_bid(self.estimated_transport_cost)
 
-        #establish transporters
+        # establish transporters
         self.set_transporters_initial_bids(gauss_stdev, self.transporters_icnet)
-        nr_transporters_per_bid = random.randrange(1,self.nr_transporters)
+        nr_transporters_per_bid = random.randrange(1, self.nr_transporters)
         transporters = []
         for iterator in range(nr_transporters_per_bid):
             transporters.append(random.choice(self.transporters_icnet))
         bid_transporters = set(transporters)
 
-        #establish cargo owner
+        # establish cargo owner
         bid_cargo_owner = random.choice(self.cargo_owners)
         bid_data = Bid(bid_cargo_owner.id, self.estimated_transport_cost)
 
-        #establishing the winner
-        negotiation_success, list_of_accepting_transporters, nr_iterations = self.negociation(bid_transporters, max_iterations)
+        # establishing the winner
+        negotiation_success, list_of_accepting_transporters, nr_iterations = self.negociation(bid_transporters,
+                                                                                              max_iterations)
         if negotiation_success == True:
             winning_transporter, winner_price = self.determine_winning_transporter_icnet(list_of_accepting_transporters)
             winner_personality = winning_transporter.personality.get_personality()
@@ -746,19 +756,19 @@ class Environemnt:
     def aicnet(self, max_iterations, gauss_stdev, rank_method, rank_reverse):
         """AICNET"""
 
-        #init broker
+        # init broker
         self.broker.set_initial_bid(self.estimated_transport_cost)
 
-        #establish transporters
+        # establish transporters
         self.set_transporters_initial_bids(gauss_stdev, self.transporters_icnet)
         self.set_transporters_initial_bids(gauss_stdev, self.transporters_aicnet)
-        nr_transporters_per_bid = random.randrange(1,self.nr_transporters)
+        nr_transporters_per_bid = random.randrange(1, self.nr_transporters)
 
-        #establish transporters
+        # establish transporters
         aux = []
         bid_transporters_ids = []
         for iterator in range(nr_transporters_per_bid):
-            aux.append(random.randrange(1,self.nr_transporters))
+            aux.append(random.randrange(1, self.nr_transporters))
         bid_transporters_ids.extend(list(set(aux)))
         bid_transporters_icnet = []
         bid_transporters_aicnet = []
@@ -769,26 +779,30 @@ class Environemnt:
             if transporter.id in bid_transporters_ids:
                 bid_transporters_aicnet.append(transporter)
 
-        #establish cargo owner
+        # establish cargo owner
         bid_cargo_owner = random.choice(self.cargo_owners)
 
-        #establish bid data
+        # establish bid data
         bid_data_icnet = Bid(bid_cargo_owner.id, self.estimated_transport_cost)
         bid_data_aicnet = Bid(bid_cargo_owner.id, self.estimated_transport_cost)
 
-        #establishing the winner and making the necessary personality updates
-        negotiation_success, list_of_accepting_transporters, nr_iterations = self.negociation(bid_transporters_icnet, max_iterations)
+        # establishing the winner and making the necessary personality updates
+        negotiation_success, list_of_accepting_transporters, nr_iterations = self.negociation(bid_transporters_icnet,
+                                                                                              max_iterations)
         if negotiation_success == True:
-            winning_transporter_icnet, winner_price = self.determine_winning_transporter_icnet(list_of_accepting_transporters)
+            winning_transporter_icnet, winner_price = self.determine_winning_transporter_icnet(
+                list_of_accepting_transporters)
             winner_personality = winning_transporter_icnet.personality.get_personality()
             bid_data_icnet.accepted(winning_transporter_icnet.id, winner_personality, winner_price, nr_iterations)
             self.stats.bids_icnet.append(bid_data_icnet)
             self.personality_updates(bid_transporters_icnet, winning_transporter_icnet)
 
-        #establishing the winner and making the necessary personality updates
-        negotiation_success, list_of_accepting_transporters, nr_iterations = self.negociation(bid_transporters_aicnet, max_iterations)
+        # establishing the winner and making the necessary personality updates
+        negotiation_success, list_of_accepting_transporters, nr_iterations = self.negociation(bid_transporters_aicnet,
+                                                                                              max_iterations)
         if negotiation_success == True:
-            winning_transporter_aicnet, rank = self.determine_winning_transporter_aicnet(list_of_accepting_transporters, rank_method, rank_reverse)
+            winning_transporter_aicnet, rank = self.determine_winning_transporter_aicnet(list_of_accepting_transporters,
+                                                                                         rank_method, rank_reverse)
             winner_price2 = list_of_accepting_transporters[winning_transporter_aicnet]
             winner_personality2 = winning_transporter_aicnet.personality.get_personality()
             bid_data_aicnet.accepted(winning_transporter_aicnet.id, winner_personality2, winner_price2, nr_iterations)
@@ -803,8 +817,8 @@ class Environemnt:
             self.global_bid_iterator += 1
             self.icnet(self.max_iterations, self.gauss_stdev)
 
-        #update stats
-        self.stats.transporters_icnet =self.transporters_icnet
+        # update stats
+        self.stats.transporters_icnet = self.transporters_icnet
 
     def aicnet_experiment(self, nr_bids, rank_method, rank_reverse):
         """Run an AICNET experiment with no_transport_requests"""
@@ -826,16 +840,30 @@ class Environemnt:
             self.global_bid_iterator += 1
             self.aicnet(self.max_iterations, self.gauss_stdev, rank_method, rank_reverse)
 
-        #update stats
+        # update stats
         self.stats.transporters_icnet = self.transporters_icnet
         self.stats.transporters_aicnet = self.transporters_aicnet
 
-#environment variables
+
+# environment variables
 brokerPersonality = "LOW_PRICE_LENIENT"
 noTransportProviders = 50
 noCargoOwners = 1000
 maxIterations = 12
-displacement = 10 #percentage
-deviation = 10 # the smaller the more diverse population
-#initialising the environment
+displacement = 10  # percentage
+deviation = 10  # the smaller the more diverse population
+# initialising the environment
 e = Environemnt(brokerPersonality, noTransportProviders, noCargoOwners, maxIterations, displacement, deviation)
+
+if __name__ == "__main__":
+    e.icnet_experiment(10)
+    e.aicnet_experiment(10, "pagerank", False)
+    e.stats.get_avg_no_iterations_per_negotiation(1)
+    e.stats.get_avg_no_iterations_per_negotiation(2)
+    e.stats.get_transporter_gain_stats(1)
+    e.stats.get_transporter_gain_stats(2)
+    e.stats.get_winning_transporter_personality_stats(1)
+    e.stats.get_winning_transporter_personality_stats(2)
+    e.stats.get_nr_of_failed_negotiations(1)
+    e.stats.get_nr_of_failed_negotiations(2)
+    e.stats.plot_sorted_winning_transporters()
