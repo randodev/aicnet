@@ -1,4 +1,4 @@
-from environment import Environemnt
+from environment import Environment
 
 if __name__ == "__main__":
     # Environment variables
@@ -9,7 +9,7 @@ if __name__ == "__main__":
     displacement = 10  # percentage
     deviation = 10  # the smaller the more diverse population
     # initialising the environment
-    e = Environemnt(
+    e = Environment(
         brokerPersonality,
         noTransportProviders,
         noCargoOwners,
