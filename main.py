@@ -119,7 +119,7 @@ class Personality:
 
     def get_GeneratedEstimationAdvantage(self):
         return self.minPercentageOverEstimatedPrice + (
-                    self.maxPercentageOverEstimatedPrice - self.minPercentageOverEstimatedPrice) * random.random()
+                self.maxPercentageOverEstimatedPrice - self.minPercentageOverEstimatedPrice) * random.random()
 
     def get_BidCeiling(self, estimated_cost):
         return estimated_cost + self.maxPercentageOverEstimatedPrice * estimated_cost
@@ -556,7 +556,7 @@ class Statistics():
 class Environemnt:
 
     def __init__(self, broker_personality, nr_transporters, nr_cargo_owners, max_iterations,
-                 max_displacement_form_estimated_price, gauss_stdev):
+                 max_displacement_from_estimated_price, gauss_stdev):
         self.broker_personality = broker_personality
         self.nr_transporters = nr_transporters
         self.nr_cargo_owners = nr_cargo_owners
@@ -565,23 +565,23 @@ class Environemnt:
         self.new_broker()
         self.stats = Statistics(self.transporters_icnet, self.transporters_aicnet, self.cargo_owners)
         self.max_iterations = max_iterations
-        self.max_displacement_form_estimated_price = max_displacement_form_estimated_price
+        self.max_displacement_from_estimated_price = max_displacement_from_estimated_price
         self.gauss_stdev = gauss_stdev
         self.global_bid_iterator = 0
         self.multiple_yes = 0
 
-    def new_transport(self, max_displacement_form_estimated_price):
+    def new_transport(self, max_displacement_from_estimated_price):
         """Sets up a new transport request"""
 
         random.seed()
         self.estimated_transport_cost = random.uniform(1, 10000)
         random.seed()
         broker_starting_price = self.broker.personality.get_GeneratedEstimationAdvantage()
-        self.gaussian_displacement = random.uniform(broker_starting_price, max_displacement_form_estimated_price) \
+        self.gaussian_displacement = random.uniform(broker_starting_price, max_displacement_from_estimated_price) \
                                      / 100 * self.estimated_transport_cost
 
     def new_broker(self):
-        """Initialzs a new broker"""
+        """Initializes a new broker"""
 
         # self.broker_personality= random.choice(self.personality_types)
         self.broker = Broker(self.broker_personality)
@@ -618,7 +618,7 @@ class Environemnt:
     def determine_winning_transporter_icnet(self, list_of_accepting_transporters):
         """
         In case multiple transporters said yes then this function will determine the best offer
-        If there are two offers with the same best price the the function will randomnly choose between those transporters
+        If there are two offers with the same best price the the function will randomly choose between those transporters
         """
 
         transporters_sorted_by_price = sorted(list_of_accepting_transporters.items(), key=operator.itemgetter(1),
@@ -640,7 +640,7 @@ class Environemnt:
     def determine_winning_transporter_aicnet(self, list_of_accepting_transporters, rank_method, rank_reverse):
         """
          In case multiple transporters said yes then this function will determine the best offer based on SNA a specific SNA metric
-         If there are two offers with the same SNA metric value the the function will randomnly choose between those transporters
+         If there are two offers with the same SNA metric value the the function will randomly choose between those transporters
          """
 
         accepting_transporters_with_graph_rank = {}
@@ -810,10 +810,15 @@ class Environemnt:
             self.personality_updates(bid_transporters_aicnet, winning_transporter_aicnet)
 
     def icnet_experiment(self, nr_bids):
-        """Run an ICNET experiment with no_transport_requests"""
+        """
+        Run an ICNET experiment with no_transport_requests
+        :param nr_bids: number of bidding rounds
+        :return:
+        """
 
+        # Run simulation for each bidding round
         for iterator in range(nr_bids):
-            self.new_transport(self.max_displacement_form_estimated_price)
+            self.new_transport(self.max_displacement_from_estimated_price)
             self.global_bid_iterator += 1
             self.icnet(self.max_iterations, self.gauss_stdev)
 
@@ -836,7 +841,7 @@ class Environemnt:
                 self.stats.compute_degree(2)
             if rank_method == "katz":
                 self.stats.compute_katz(2)
-            self.new_transport(self.max_displacement_form_estimated_price)
+            self.new_transport(self.max_displacement_from_estimated_price)
             self.global_bid_iterator += 1
             self.aicnet(self.max_iterations, self.gauss_stdev, rank_method, rank_reverse)
 
@@ -845,17 +850,24 @@ class Environemnt:
         self.stats.transporters_aicnet = self.transporters_aicnet
 
 
-# environment variables
-brokerPersonality = "LOW_PRICE_LENIENT"
-noTransportProviders = 50
-noCargoOwners = 1000
-maxIterations = 12
-displacement = 10  # percentage
-deviation = 10  # the smaller the more diverse population
-# initialising the environment
-e = Environemnt(brokerPersonality, noTransportProviders, noCargoOwners, maxIterations, displacement, deviation)
-
 if __name__ == "__main__":
+    # Environment variables
+    brokerPersonality = "LOW_PRICE_LENIENT"
+    noTransportProviders = 50
+    noCargoOwners = 1000
+    maxNegotiationIterations = 12
+    displacement = 10  # percentage
+    deviation = 10  # the smaller the more diverse population
+    # initialising the environment
+    e = Environemnt(
+        brokerPersonality,
+        noTransportProviders,
+        noCargoOwners,
+        maxNegotiationIterations,
+        displacement,
+        deviation
+    )
+
     e.icnet_experiment(10)
     e.aicnet_experiment(10, "pagerank", False)
     e.stats.get_avg_no_iterations_per_negotiation(1)
@@ -867,3 +879,9 @@ if __name__ == "__main__":
     e.stats.get_nr_of_failed_negotiations(1)
     e.stats.get_nr_of_failed_negotiations(2)
     e.stats.plot_sorted_winning_transporters()
+
+    e.stats.build_graph(1)
+    e.stats.build_graph(2)
+
+    e.stats.save_graph(1, "icnet_graph")
+    e.stats.save_graph(2, "aicnet_graph")
