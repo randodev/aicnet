@@ -18,7 +18,7 @@ class Environment:
         self.nr_cargo_owners = nr_cargo_owners
         self.new_transport_providers()
         self.new_cargo_owners()
-        self.new_broker()
+        self.broker = Broker(self.broker_personality)
         self.stats = Statistics(self.transporters_icnet, self.transporters_aicnet, self.cargo_owners)
         self.max_iterations = max_iterations
         self.max_displacement_from_estimated_price = max_displacement_from_estimated_price
@@ -35,12 +35,6 @@ class Environment:
         broker_starting_price = self.broker.personality.get_GeneratedEstimationAdvantage()
         self.gaussian_displacement = random.uniform(broker_starting_price, max_displacement_from_estimated_price) \
                                      / 100 * self.estimated_transport_cost
-
-    def new_broker(self):
-        """Initializes a new broker"""
-
-        # self.broker_personality= random.choice(self.personality_types)
-        self.broker = Broker(self.broker_personality)
 
     def new_transport_providers(self):
         """Initializes new transport providers"""
