@@ -1,5 +1,4 @@
-from personality import Personality
-
+from .personality import Personality
 
 class Broker:
 

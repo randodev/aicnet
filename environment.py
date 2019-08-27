@@ -2,17 +2,18 @@ import random
 import operator
 import copy
 import networkx as nx
-from transport_provider import TransportProvider
-from bid import Bid
-from cargo_owner import CargoOwner
-from broker import Broker
-from statistics import Statistics
-
+from .transport_provider import TransportProvider
+from .bid import Bid
+from .cargo_owner import CargoOwner
+from .broker import Broker
+from .statistics import Statistics
 
 class Environment:
 
     def __init__(self, broker_personality, nr_transporters, nr_cargo_owners, max_iterations,
                  max_displacement_from_estimated_price, gauss_stdev):
+
+        # L
         self.broker_personality = broker_personality
         self.nr_transporters = nr_transporters
         self.nr_cargo_owners = nr_cargo_owners
