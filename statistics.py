@@ -373,3 +373,17 @@ class Statistics():
         graph_name = file_name + ".gml"
         graph_path = os.path.join(os.getcwd(), graph_name)
         nx.write_gml(current_graph, graph_path)
+
+    def save_graph_adj(self, graph_id, folder):
+        """Saves the current graph as .gml format file"""
+
+        current_graph = self.retrieve_graph(graph_id)
+
+        for node in current_graph.nodes(data=True):
+            node_id = node[0]
+            if node_id >= 100000:
+                current_graph.node[node_id]['type'] = "CargoOwner"
+            else:
+                current_graph.node[node_id]['type'] = "TransportProvider"
+
+        nx.write_adjlist(current_graph, os.path.join(folder, "graph.adjlist"))
