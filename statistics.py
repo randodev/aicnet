@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import copy
 import networkx as nx
 import os
+import json
 
 
 class Statistics():
@@ -26,10 +27,10 @@ class Statistics():
             aux_graph = copy.deepcopy(self.graph_aicnet)
             return aux_graph
 
-    def print_graph_stats(self, graph_id):
+    def print_graph_stats(self, graph_id, folder):
         """Print some computed graph related metrics
         May not work for small graphs"""
-
+        stats_to_print = {}
         aux_graph = self.retrieve_graph(graph_id)
 
         no_nodes_with_degree_zero = 0
@@ -39,16 +40,16 @@ class Statistics():
                 no_nodes_with_degree_zero += 1
                 aux_graph.remove_node(node)
 
-        print("No nodes with degree zero", no_nodes_with_degree_zero)
-        # print("Node connectivty", nx.node_connectivity(aux_graph))
-        # print("Average degree connectivity",nx.average_degree_connectivity(aux_graph))
-        # print("Max clique", nx.max_clique(aux_graph))
-        print("Average clustering", nx.average_clustering(aux_graph))
-        # print("Communicability", nx.communicability(aux_graph))
-        print("Diameter", nx.diameter(aux_graph))
-        print("No. nodes in center", len(nx.center(aux_graph)))
-        print("No. nodes in periphery", len(nx.periphery(aux_graph)))
-        print("Average shortest path length", nx.average_shortest_path_length(aux_graph))
+        stats_to_print["no_nodes_with_degree_zero"] = no_nodes_with_degree_zero
+        stats_to_print["average_clustering"] = nx.average_clustering(aux_graph)
+        stats_to_print["diameter"] = nx.diameter(aux_graph)
+        stats_to_print["no_nodes_in_center"] = len(nx.center(aux_graph))
+        stats_to_print["no_nodes_in_periphery"] = len(nx.periphery(aux_graph))
+        stats_to_print["average_shortest_path_length"] = nx.average_shortest_path_length(aux_graph)
+
+        with open(os.path.join(folder, "graph_stats.json"), 'w') as fout:
+            json.dump(stats_to_print, fout)
+
 
     def build_graph(self, graph_id):
         """Clears and builds the indicated graph based on the list of bids and on the list of cargo owners"""
@@ -176,20 +177,32 @@ class Statistics():
         else:
             plt.savefig(os.path.join(folder, 'metric_comparison.png'))
 
-    def print_bids_comparison(self):
+    def print_bids_comparison(self, folder):
         """Prints side by side atrributes of bids for icnet and aicnet"""
-
+        bids_comparison = []
         for counter in range(len(self.bids_icnet)):
-            print("===" + str(counter + 1) + "===")
-            print(
-                "Cargo Owner " + str(self.bids_icnet[counter].cargo_owner_id) + " <> " + str(
-                    self.bids_aicnet[counter].cargo_owner_id))
-            print("Transporter " + str(self.bids_icnet[counter].transporter_id) + " <> " + str(
-                self.bids_aicnet[counter].transporter_id))
-            print("Personality " + str(self.bids_icnet[counter].transporter_personality) + " <> " + str(
-                self.bids_aicnet[counter].transporter_personality))
-            print("Winning price " + str(self.bids_icnet[counter].winning_price) + " <> " + str(
-                self.bids_aicnet[counter].winning_price))
+            comparison = {
+                "cargo_owner": {
+                    "icnet": str(self.bids_icnet[counter].cargo_owner_id),
+                    "aicnet": str(self.bids_aicnet[counter].cargo_owner_id)
+                },
+                "transporter": {
+                    "icnet": str(self.bids_icnet[counter].transporter_id),
+                    "aicnet": str(self.bids_aicnet[counter].transporter_id)
+                },
+                "personality": {
+                    "icnet": str(self.bids_icnet[counter].transporter_personality),
+                    "aicnet": str(self.bids_aicnet[counter].transporter_personality)
+                },
+                "winning_price": {
+                    "icnet": str(self.bids_icnet[counter].winning_price),
+                    "aicnet": str(self.bids_aicnet[counter].winning_price)
+                }
+            }
+            bids_comparison.append(comparison)
+
+        with open(os.path.join(folder, "bids_comparison.json"), 'w') as fout:
+            json.dump(bids_comparison, fout)
 
     def print_bids(self, bids_id):
         """Prints the indicated bids"""

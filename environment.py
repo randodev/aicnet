@@ -282,7 +282,6 @@ class Environment:
         self.transporters_aicnet = copy.deepcopy(self.transporters_icnet)
         self.stats.bids_aicnet = copy.deepcopy(self.stats.bids_icnet)
         for iterator in range(nr_bids):
-            print(iterator)
             self.stats.build_graph(2)
             if rank_method == "pagerank":
                 self.stats.compute_pagerank(2)
