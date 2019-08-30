@@ -130,7 +130,7 @@ class Statistics():
             rank = nx.katz_centrality(self.graph_aicnet)
             nx.set_node_attributes(self.graph_aicnet, 'katz', rank)
 
-    def plot_metric_comparison(self, graph_metric):
+    def plot_metric_comparison(self, graph_metric, folder=None):
         """Plots the indicated graph metric values for each transport provider, on the same plot area"""
 
         self.build_graph(1)
@@ -171,7 +171,10 @@ class Statistics():
         plt.legend(handles=[line_icnet, line_aicnet])
         plt.xlabel("transporters")
         plt.ylabel(graph_metric)
-        plt.show()
+        if folder is None:
+            plt.show()
+        else:
+            plt.savefig(os.path.join(folder, 'metric_comparison.png'))
 
     def print_bids_comparison(self):
         """Prints side by side atrributes of bids for icnet and aicnet"""
@@ -239,7 +242,7 @@ class Statistics():
 
         return sorted(cargo_owners.items(), key=lambda x: x[1], reverse=True)
 
-    def plot_sorted_successfull_biding_cargo_owners(self, bids_id):
+    def plot_sorted_successfull_biding_cargo_owners(self, folder=None):
         """Plots the aux_list of successful transport requests per cargo owner (already sorted)"""
 
         sorted_cargo_owners = self.get_sorted_list_of_transport_requests_per_cargo_owner(1)
@@ -250,7 +253,10 @@ class Statistics():
         plt.plot(aux_list, "r--")
         plt.xlabel("cargo owners")
         plt.ylabel("successful transport requests")
-        plt.show()
+        if folder is None:
+            plt.show()
+        else:
+            plt.savefig(os.path.join(folder, 'sorted_successful_biding_cargo_owners.png'))
 
     def get_transporter_personalities(self, transporter_id):
         """Returns a statistics on the current transport providers personality"""
@@ -289,7 +295,7 @@ class Statistics():
 
         return sorted(winners.items(), key=lambda x: x[1], reverse=True)
 
-    def plot_sorted_winning_transporters(self):
+    def plot_sorted_winning_transporters(self, folder=None):
         """Plots the sorted (descendigly) transporter wins for both aicnet and icnet"""
 
         sorted_winning_transporters_icnet = self.get_winning_transporters(1)
@@ -306,7 +312,10 @@ class Statistics():
         plt.legend(handles=[line_icnet, line_aicnet])
         plt.xlabel("transporters")
         plt.ylabel("no. wins")
-        plt.show()
+        if folder is None:
+            plt.show()
+        else:
+            plt.savefig(os.path.join(folder, 'sorted_winning_transporters.png'))
 
     def get_transporter_gain_stats(self, bids_id):
         """Returns and computers the average gain and the standard deviation for transport providers """
@@ -375,7 +384,6 @@ class Statistics():
         nx.write_gml(current_graph, graph_path)
 
     def save_graph_adj(self, graph_id, folder):
-        """Saves the current graph as .gml format file"""
 
         current_graph = self.retrieve_graph(graph_id)
 
