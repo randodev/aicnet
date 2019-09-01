@@ -197,6 +197,10 @@ class Statistics():
                 "winning_price": {
                     "icnet": str(self.bids_icnet[counter].winning_price),
                     "aicnet": str(self.bids_aicnet[counter].winning_price)
+                },
+                "estimated_price": {
+                    "icnet": self.bids_icnet[counter].estimated_price,
+                    "aicnet": self.bids_aicnet[counter].estimated_price
                 }
             }
             bids_comparison.append(comparison)

@@ -1,4 +1,8 @@
-from .personality import Personality
+import os
+if os.environ.get('LOCALDEV'):
+    from personality import Personality
+else:
+    from .personality import Personality
 
 
 class TransportProvider:

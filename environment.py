@@ -2,11 +2,19 @@ import random
 import operator
 import copy
 import networkx as nx
-from .transport_provider import TransportProvider
-from .bid import Bid
-from .cargo_owner import CargoOwner
-from .broker import Broker
-from .statistics import Statistics
+import os
+if os.environ.get('LOCALDEV'):
+    from transport_provider import TransportProvider
+    from bid import Bid
+    from cargo_owner import CargoOwner
+    from broker import Broker
+    from statistics import Statistics
+else:
+    from .transport_provider import TransportProvider
+    from .bid import Bid
+    from .cargo_owner import CargoOwner
+    from .broker import Broker
+    from .statistics import Statistics
 
 class Environment:
 
@@ -27,10 +35,11 @@ class Environment:
         self.global_bid_iterator = 0
         self.multiple_yes = 0
 
-    def new_transport(self, max_displacement_from_estimated_price):
+    def new_transport_request(self, max_displacement_from_estimated_price):
         """Sets up a new transport request"""
 
         random.seed()
+        # Set a transport cost
         self.estimated_transport_cost = random.uniform(1, 10000)
         random.seed()
         broker_starting_price = self.broker.personality.get_GeneratedEstimationAdvantage()
@@ -269,7 +278,7 @@ class Environment:
 
         # Run simulation for each bidding round
         for iterator in range(nr_bids):
-            self.new_transport(self.max_displacement_from_estimated_price)
+            self.new_transport_request(self.max_displacement_from_estimated_price)
             self.global_bid_iterator += 1
             self.icnet(self.max_iterations, self.gauss_stdev)
 
@@ -291,7 +300,7 @@ class Environment:
                 self.stats.compute_degree(2)
             if rank_method == "katz":
                 self.stats.compute_katz(2)
-            self.new_transport(self.max_displacement_from_estimated_price)
+            self.new_transport_request(self.max_displacement_from_estimated_price)
             self.global_bid_iterator += 1
             self.aicnet(self.max_iterations, self.gauss_stdev, rank_method, rank_reverse)
 
